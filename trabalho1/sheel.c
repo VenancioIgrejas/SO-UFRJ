@@ -31,7 +31,6 @@ int main() {
       printf("Digite o argumento %d\n",count);
       scanf("%s",args[count]);
     }
-    printf("aqui porra filho\n");
     const char * destPtr = (const char *)args[0];
     strcat(bin,destPtr);
     const char * binconst = (const char *)bin;
