@@ -5,16 +5,23 @@
 #include <sys/wait.h>
 #include <string.h>
 
+bool flag = false;
 
 void signal_handler(int sigNumber)
 {
   if (sigNumber == SIGUSR1){
     printf("Recebi um SIGUSR1\n");
+    flag = true
 
   }
 }
 
 int main() {
+
+while (true){
+  flag = false;
+
+
   char *bin = "/bin/";
   char escrever[101];
   char *args[20];
@@ -42,7 +49,7 @@ int main() {
     printf("Task is done\n");
     return 0;
   }
-
+}
 
 
 };
