@@ -27,3 +27,6 @@ def check_sudoku(sudoku):
     if len(np.unique(sudoku)) == 9 :
         return True
     return False
+
+def debug(msg='defaul'):
+    print "{0}".format(msg)
