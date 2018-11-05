@@ -22,11 +22,11 @@ def create_lines(q,event,read_msg):
         if len(np.unique(line_rdm)) == 3:
             q.put(line_rdm)
             debug('processo pra criar')
-            event.clear()
+            event.wait()
             debug('passei do wait')
             print read_msg.poll()
             debug('passei da mensagem')
-            if read_msg.poll() is 'finished':
+            if read_msg.poll() is True:#'finished':
                 debug('acabou?')
                 break
 
@@ -36,8 +36,7 @@ def control_process(q,event,send_msg,lock):
     time.sleep(0.1)
     while True:
         debug(q.qsize())
-        while not q.qsize() == 3:pass
-        lock.acquire()
+        while not q.qsize() == 3: time.sleep(0.01)
         list_tmp = []
         while not q.empty():
             list_tmp.append(q.get())
@@ -50,11 +49,11 @@ def control_process(q,event,send_msg,lock):
             send_msg.close()
             event.set()
             debug('acabou')
+            time.sleep(0.9)
             break
         else:
             debug(u'nao consegui')
             event.set()
-        lock.release()
 
 def child_proc(q):
     np.random.seed()
