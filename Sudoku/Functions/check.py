@@ -29,4 +29,4 @@ def check_sudoku(sudoku):
     return False
 
 def debug(msg='defaul'):
-    print "{0}".format(msg)
+    print("{0}".format(msg))
