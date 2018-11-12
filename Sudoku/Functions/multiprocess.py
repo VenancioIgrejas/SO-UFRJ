@@ -3,14 +3,12 @@ import sys
 import time
 import numpy as np
 import pandas as pd
-from check import debug
-from multiprocessing import Process
+from check import debug,check_sudoku
+from multiprocessing import Process,Queue
 
 #for use 'from Functions.multiprocess import *'
-__all__ = ['debug',
-           'create_lines',
+__all__ = ['create_lines',
            'control_process',
-           'child_proc',
            'father_proc']
 
 
@@ -55,24 +53,8 @@ def control_process(q,event,send_msg,lock):
             debug(u'nao consegui')
             event.set()
 
-def child_proc(q):
+def father_proc(q_sudoku):
     np.random.seed()
-    line_rdm = np.random.randint(1,10,size=(1,3))
-    if len(np.unique(line_rdm)) == 3:
-         q.put(line_rdm)
-
-def father_proc(q,q_sudoku):
-    while True:
-        list_process = [Process(target=child_proc,args=(q,)) for i in range(3)]
-        for process in list_process:
-            process.start()
-        for process in list_process:
-            process.join()
-
-        list_tmp = []
-        while not q.empty():
-            list_tmp.append(q.get())
-
-        if len(np.unique(list_tmp)) == 9:
-            q_sudoku.put(list_tmp)
-            break
+    rdw_mt = np.random.randint(1,10,size=(3,3))
+    if check_sudoku(rdw_mt):
+        q_sudoku.put(rdw_mt)

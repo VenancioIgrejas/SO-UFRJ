@@ -6,39 +6,43 @@ import numpy as np
 import pandas as pd
 from multiprocessing import Process,Queue,Event,Pipe, Lock
 
-from Functions.check import timer
+from Functions.check import timer,check_sudoku
 from Functions.multiprocess import *
 
-
-q = Queue(3)
+count = 0
 q_answer = Queue()
-event = Event()
-send,read = Pipe()
-lock = Lock()
+number_of_process = 1000
 
 
-# list_process = [Process(target=create_lines,args=(q,event,read)) for i in range(3)]
-# list_process.append(Process(target=control_process,args=(q,event,send,lock)))
-# for process in list_process:
-#    process.start()
-#
-# for process in list_process:
-#    process.join()
+t_start = time.time()
+list_tmp = []
+
+while True:
+
+    list_process = [Process(target=father_proc,args=(q_answer,)) for i in range(number_of_process)]
+    for process in list_process:
+        process.start()
+    for process in list_process:
+        process.join()
+
+    while not q_answer.empty():
+        list_tmp.append(q_answer.get())
+
+    count=count+1
+
+    if list_tmp:
+        break
 
 
+t_finish = time.time()
+print "process done in {0} with {1} batch process".format(t_finish - t_start, count)
 
-# work but with the same time if it wasn't parallel
-with timer('processo terminado'):
-    p = Process(target=father_proc,args=(q,q_answer))
-    p.start()
-    p.join()
-
-    mt = q_answer.get()
 
 # print the answer
 
-list_df = [pd.DataFrame(mt[i]) for i in range(3)] # transform each line of mt in DataFrame and put in list
+#list_df = [pd.DataFrame(list_tmp) for i in range(3)] # transform each line of mt in DataFrame and put in list
 
-sudoku = pd.concat(list_df).values # transform the list of Dataframe in Dataframe matrix and return as np.array
+list_df = pd.DataFrame(list_tmp[0])
+sudoku = list_df.values#pd.concat(list_df).values # transform the list of Dataframe in Dataframe matrix and return as np.array
 
 print(sudoku)
