@@ -4,14 +4,26 @@ import sys
 import time
 import numpy as np
 import pandas as pd
-from multiprocessing import Process,Queue,Event,Pipe, Lock
+import argparse
 
-from Functions.check import timer,check_sudoku
+#configurate argsv for enter the program
+
+parser = argparse.ArgumentParser(description='Process some integers.')
+parser.add_argument('-n', '--number_of_process',
+		type=int, default=1,
+		help='number of process for run parallel the program')
+
+from multiprocessing import Process, Queue, Event, Pipe, Lock
+
+from Functions.check import timer, check_sudoku
 from Functions.multiprocess import *
+from Functions.data_mount import CSVfile
+
+args = parser.parse_args()
 
 count = 0
 q_answer = Queue()
-number_of_process = 1000
+number_of_process = args.number_of_process
 
 
 t_start = time.time()
@@ -35,8 +47,12 @@ while True:
 
 
 t_finish = time.time()
-print "process done in {0} with {1} batch process".format(t_finish - t_start, count)
+duration = t_finish - t_start
+print "process done in {0} with {1} batch process".format(duration, count)
 
+csv = CSVfile('./Results',number_of_process)
+
+csv.add_element(duration)
 
 # print the answer
 
