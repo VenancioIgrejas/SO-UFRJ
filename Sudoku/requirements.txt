@@ -1,3 +1,6 @@
 numpy==1.15.3
 pandas==0.23.4
 multiprocessing==2.6.2.1
+python-hwinfo
+matplotlib
+csv
